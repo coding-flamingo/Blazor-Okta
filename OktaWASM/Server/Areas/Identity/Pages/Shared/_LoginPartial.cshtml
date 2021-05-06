@@ -1,7 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using OktaWASM.Server.Models
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -12,7 +9,7 @@
 }
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
+@if (User != null)
 {
     <li class="nav-item">
         <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>

@@ -18,11 +18,20 @@ namespace OktaWASM.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddHttpClient("OktaWASM.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            builder.Services.AddHttpClient("OktaWASM.ServerAPI", client => 
+                    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
-            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("OktaWASM.ServerAPI"));
+            builder.Services.AddScoped(sp =>
+                sp.GetRequiredService<IHttpClientFactory>().CreateClient("OktaWASM.ServerAPI"));
+
+            builder.Services.AddOidcAuthentication(options =>
+            {
+                options.ProviderOptions.Authority = builder.Configuration.GetValue<string>("Okta:Authority");
+                options.ProviderOptions.ClientId = builder.Configuration.GetValue<string>("Okta:ClientId"); ;
+                options.ProviderOptions.ResponseType = "code";
+            });
 
             builder.Services.AddApiAuthorization();
 
